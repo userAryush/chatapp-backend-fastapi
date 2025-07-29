@@ -7,17 +7,22 @@ from sqlalchemy.orm import Session
 from rbac import require_role
 from websocket_handler import websocket_endpoint
 
-
+# creating app
 app = FastAPI()
+# creates all database tables based on your SQLAlchemy models if they don't already exist.
 Base.metadata.create_all(bind=engine)
 
 def get_db():
-    db = SessionLocal()
+    db = SessionLocal()  # Create a new DB session
     try:
-        yield db
+        yield db          # Provide it to the request
     finally:
-        db.close()
+        db.close()        # Always close DB connection after request ends
 
+
+
+# user: UserCreate → Incoming request body will be validated using Pydantic schema.
+# db: Session = Depends(get_db) → Injects a DB session into this function.
 @app.post("/signup")
 def signup(user: UserCreate, db: Session = Depends(get_db)):
     existing = db.query(User).filter(User.username == user.username).first()
@@ -26,7 +31,7 @@ def signup(user: UserCreate, db: Session = Depends(get_db)):
     hashed = hash_password(user.password)
     new_user = User(username=user.username, password=hashed, role=user.role)
     db.add(new_user)
-    db.commit()
+    db.commit() # database ma ni save gareko
     return {"message": "User created"}
 
 @app.post("/login")

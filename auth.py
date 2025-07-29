@@ -1,4 +1,4 @@
-from jose import jwt, JWTError
+from jose import jwt
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 
@@ -6,9 +6,11 @@ SECRET_KEY = "your-secret"
 ALGORITHM = "HS256"
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+# returns a hashed password for user text password while creating users
 def hash_password(password: str):
     return pwd_context.hash(password)
 
+# to check the hashed password with user input password at the time of login
 def verify_password(plain, hashed):
     return pwd_context.verify(plain, hashed)
 
