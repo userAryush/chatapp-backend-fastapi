@@ -47,7 +47,7 @@ ws://localhost:8000/ws/{room_id}?token=<JWT>
 
 1. Register or login via the `/signup` and `/login` endpoints.
 2. Copy the JWT token from the login response.
-3. Use a WebSocket client (e.g., Postman, browser extensions, or other WebSocket tools) to connect:
+3. Use a WebSocket client (e.g., Postman) to connect:
 4. Start chatting in real-time with other users in the room!
 
 
