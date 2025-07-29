@@ -13,3 +13,6 @@ class MessageCreate(BaseModel):
     content: str
     room_id: str
     sender: str
+
+
+#  schemas define how data is validated when sent in requests or returned in responses. likeeee "How data looks in API input/output"

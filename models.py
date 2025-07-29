@@ -36,7 +36,7 @@ class Message(Base):
     room = relationship("Room", back_populates="messages")
     sender = relationship("User", back_populates="messages")
 
-
+# Models defines how data is stored in the database.
 
 # User and Message:
 
