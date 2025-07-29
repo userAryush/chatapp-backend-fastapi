@@ -3,14 +3,17 @@ from sqlalchemy.orm import relationship
 from datetime import datetime
 from database import Base
 
-class User(Base):
-    __tablename__ = "users"
+class User(Base):  # Inheriting from SQLAlchemy Base 
+    __tablename__ = "users"  # in the actual database this table will be named users
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String(50), unique=True, index=True)
-    password = Column(String(200))
+    password = Column(String(200)) # will hash it so keeping space
     role = Column(String(20), default="user")
 
     messages = relationship("Message", back_populates="sender")
+    # One-to-many : one user can send many messages
+    # This lets you access all messages sent by the user: user.messages
+    # back_populates="sender" refers to the 'sender' relationship in the Message model
 
 
 class Room(Base):
@@ -27,8 +30,20 @@ class Message(Base):
     id = Column(Integer, primary_key=True, index=True)
     room_id = Column(Integer, ForeignKey("rooms.id"))
     sender_id = Column(Integer, ForeignKey("users.id"))
-    content = Column(Text)
+    content = Column(Text)  # actual message
     timestamp = Column(DateTime, default=datetime.utcnow)
 
     room = relationship("Room", back_populates="messages")
     sender = relationship("User", back_populates="messages")
+
+
+
+# User and Message:
+
+# User.messages: All messages sent by this user.
+# Message.sender: The user who sent this message.
+
+# Room adn Message:
+
+# Room.messages: All messages in this room.
+# Message.room: The room to which this message belongs.
