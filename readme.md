@@ -1,9 +1,18 @@
+
+
 # 🗨️ FastAPI Realtime Chat Application
 
 A simple, **role-based real-time chat** application built using **FastAPI**, **WebSockets**, and **MySQL**.  
 Supports **JWT-based authentication**, **admin/user role access control**, and **room-based chat** with message persistence.
 
 ---
+## API Documentation
+https://documenter.getpostman.com/view/38648701/2sB3B8qsip
+## Chat Screenshots
+
+### Sample Chat Conversation
+
+![Chat Screenshot 1](screenshots/chat1.png)
 
 ## 🚀 Features
 

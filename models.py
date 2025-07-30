@@ -18,7 +18,8 @@ class User(Base):  # Inheriting from SQLAlchemy Base
 
 class Room(Base):
     __tablename__ = "rooms"
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(String(50), primary_key=True)
+
     name = Column(String(100), unique=True, index=True)
     description = Column(Text, nullable=True)
 
@@ -28,7 +29,7 @@ class Room(Base):
 class Message(Base):
     __tablename__ = "messages"
     id = Column(Integer, primary_key=True, index=True)
-    room_id = Column(Integer, ForeignKey("rooms.id"))
+    room_id = Column(String(50), ForeignKey("rooms.id"))
     sender_id = Column(Integer, ForeignKey("users.id"))
     content = Column(Text)  # actual message
     timestamp = Column(DateTime, default=datetime.utcnow)

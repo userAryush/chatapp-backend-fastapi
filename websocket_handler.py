@@ -1,10 +1,10 @@
 from datetime import datetime
 from database import SessionLocal
-from models import Message
+from models import Message, User  # Import User model
 from fastapi import WebSocket, WebSocketDisconnect
 from jose import JWTError
 from auth import decode_token
-
+from models import Room
 connections = {}
 
 async def websocket_endpoint(websocket: WebSocket, room_id: str, token: str, cursor: str = None):
@@ -16,12 +16,25 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, token: str, cur
         return
 
     await websocket.accept()
-
+    db = SessionLocal()
+    room = db.query(Room).filter(Room.id == room_id).first()
+    if not room:
+        new_room = Room(id=room_id, name=f"Room {room_id}")
+        db.add(new_room)
+        db.commit()
+    db.close()
     if room_id not in connections:
         connections[room_id] = []
     connections[room_id].append(websocket)
 
-    db = SessionLocal()
+    
+
+    # Fetch user from DB once here using username
+    user = db.query(User).filter(User.username == username).first()
+    if not user:
+        await websocket.close(code=1008)
+        db.close()
+        return
 
     # Parse cursor datetime if provided
     if cursor:
@@ -40,7 +53,7 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, token: str, cur
 
     # Send messages oldest first
     for msg in reversed(recent_messages):
-        await websocket.send_text(f"[{msg.timestamp.strftime('%H:%M')}] {msg.sender}: {msg.content}")
+        await websocket.send_text(f"[{msg.timestamp.strftime('%H:%M')}] {msg.sender.username}: {msg.content}")
 
     db.close()
 
@@ -51,7 +64,12 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, token: str, cur
 
             # Store message
             db = SessionLocal()
-            message = Message(room_id=room_id, content=data, sender=username, timestamp=timestamp)
+            message = Message(
+                room_id=room_id,
+                content=data,
+                sender_id=user.id,   # use sender_id here (integer FK)
+                timestamp=timestamp
+            )
             db.add(message)
             db.commit()
             db.close()
@@ -62,6 +80,3 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, token: str, cur
 
     except WebSocketDisconnect:
         connections[room_id].remove(websocket)
-from sqlalchemy.orm import Session
-
-
