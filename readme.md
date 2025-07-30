@@ -10,7 +10,7 @@ https://documenter.getpostman.com/view/38648701/2sB3B8qsip
 
 ### Sample Chat Conversation
 
-![Chat Screenshot 1](screenshots/chat1.png)
+![Chat Screenshot 1](screenshot/chat1.png)
 
 ## 🚀 Features
 
